@@ -7,14 +7,18 @@ import methodSwitch
 
 #Graph compute nodes 
 
-s = methodServer.importdatatoserver('/Users/daniela/DevOps/TheGrapher/data/el01cn09_osmonitor.csv')
-print("Promedio de CPU: ", str(s.meanmem()))
+#methodServer.importallservers()
+methodServer.graphdfs()
+
+
+#s = methodServer.importdatatoserver('/Users/daniela/DevOps/TheGrapher/data/el01cn09_osmonitor.csv')
+#print("Promedio de CPU: ", str(s.meanmem()))
 
 
 #Graph Switches 
 
-s = methodSwitch.importdatatoswitch(2)
-s.graphports()
+#s = methodSwitch.importdatatoswitch(2)
+#s.graphports()
 #s.graphserver()
 
 #Graph Storage ZFS heads statistics 

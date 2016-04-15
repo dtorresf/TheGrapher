@@ -56,15 +56,24 @@ def importdatatoswitch(nports):
 	s = Switch.Switch(ports[0].switchname, nports, ports)
 	return s
 
+def importallswitches():
+	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
+	data_dir = '/Users/daniela/DevOps/TheGrapher/data/switches/*'
+	files = glob.glob(data_dir)
+	switches = list()
+
+	for f in files:
+		s = importdatatoswitch(n)
+		switches.append(s)
+
+	return switches
+
 def graph(ports,nports):
 
 	graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + ports[0].switchname + '/'
-	figlist = list()
-	paxlist = list()
-	saxlist = list()
 
 	for i in range(0,nports):
-		graph_name=graph_dir + ports[i].switchname + '_' + str(i) 
+		graph_name=graph_dir + ports[i].switchname + '_' + ports[i].name 
 		data_to_plot1=ports[i].rx
 		data_to_plot2=ports[i].tx
 		ax= data_to_plot1.plot(x='date', y='rxb',style='-b', grid=True)
@@ -73,3 +82,10 @@ def graph(ports,nports):
 		fig2 = ax2.get_figure()
 		fig.savefig(graph_name + '_rx' + '.png')
 		fig2.savefig(graph_name + '_tx' + '.png')
+
+def graphdfs():
+	'''Iterates over files and uses the impordata function for each one 
+	and graphs each one'''
+	switches = importallswitches()
+	for s in switches:
+		s.graphports()
