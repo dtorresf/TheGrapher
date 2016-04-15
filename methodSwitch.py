@@ -32,7 +32,44 @@ def importdatatoport(csvfile):
 	addheadformat(csvfile)
 	data=pd.read_csv(csvfile,parse_dates=['date'],dayfirst=True)
 	port_data = data[['port']]
+	name_data = data[['name']]
 	port_value = port_data.values
+	name_value = name_data.values
 	port = str(port_value[0])
-	s = Switch.Switch(port[2:-2], data[['date','rx']], data[['date','tx']])
+	name = str(name_value[0])
+	p = Port.Port(port[2:-2],name[2:-2],data[['date','rxb']], data[['date','txb']])
+	return p
+
+def importdatatoswitch(nports):
+	'''The function that imports data from CSV format to Switch'''
+	'''I need a function that evaluates files on a directory and gets the info of the files for the ports'''
+	
+	csv_directory ='/Users/daniela/DevOps/TheGrapher/data/switches/'
+	files = [csv_directory + 'el01gw01_ibmonitor_Port_0A_ETH_1.csv', csv_directory + 'el01gw01_ibmonitor_Port_1A_ETH_1.csv']
+	
+	ports = list()	
+	for i in range(0,nports):
+		'''Fill up an array with ports'''
+		p = importdatatoport(files[i])
+		ports.append(p)
+
+	s = Switch.Switch(ports[0].switchname, nports, ports)
 	return s
+
+def graph(ports,nports):
+
+	graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + ports[0].switchname + '/'
+	figlist = list()
+	paxlist = list()
+	saxlist = list()
+
+	for i in range(0,nports):
+		graph_name=graph_dir + ports[i].switchname + '_' + str(i) 
+		data_to_plot1=ports[i].rx
+		data_to_plot2=ports[i].tx
+		ax= data_to_plot1.plot(x='date', y='rxb',style='-b', grid=True)
+		ax2= data_to_plot2.plot(x='date', y='txb', style='-b', grid=True)
+		fig = ax.get_figure()
+		fig2 = ax2.get_figure()
+		fig.savefig(graph_name + '_rx' + '.png')
+		fig2.savefig(graph_name + '_tx' + '.png')
