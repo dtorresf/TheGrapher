@@ -14,7 +14,7 @@ def addheadformat(csvfile):
 	with open(csvfile, 'r') as file:
 		#has_header = csv.Sniffer().has_header(file.read(2048))
 		first_line = file.readline()
-		if 'cpu' not in first_line:
+		if 'name' not in first_line:
 			print("No header")
 			f = open(csvfile)
 			text = f.read()
@@ -46,7 +46,7 @@ def graph(data,y,name):
 	fig = ax.get_figure()
 	fig.savefig(graph_name)
 
-def getdatafiles():
+def getdatafiles():	
 	'''Obtains the data from the servers with ssh'''
 
 def graphdfs():
