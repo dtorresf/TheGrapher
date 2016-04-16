@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import re
+import glob
 import Switch
 import Port
 
@@ -40,12 +40,12 @@ def importdatatoport(csvfile):
 	p = Port.Port(port[2:-2],name[2:-2],data[['date','rxb']], data[['date','txb']])
 	return p
 
-def importdatatoswitch(nports):
+def importdatatoswitch(nports,files):
 	'''The function that imports data from CSV format to Switch'''
 	'''I need a function that evaluates files on a directory and gets the info of the files for the ports'''
 	
-	csv_directory ='/Users/daniela/DevOps/TheGrapher/data/switches/'
-	files = [csv_directory + 'el01gw01_ibmonitor_Port_0A_ETH_1.csv', csv_directory + 'el01gw01_ibmonitor_Port_1A_ETH_1.csv']
+	#csv_directory ='/Users/daniela/DevOps/TheGrapher/data/switches/'
+	#files = [csv_directory + 'el01gw01_ibmonitor_Port_0A_ETH_1.csv', csv_directory + 'el01gw01_ibmonitor_Port_1A_ETH_1.csv']
 	
 	ports = list()	
 	for i in range(0,nports):
@@ -56,17 +56,29 @@ def importdatatoswitch(nports):
 	s = Switch.Switch(ports[0].switchname, nports, ports)
 	return s
 
-def importallswitches():
+def importallswitches(nports,nswitches):
 	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
 	data_dir = '/Users/daniela/DevOps/TheGrapher/data/switches/*'
 	files = glob.glob(data_dir)
 	switches = list()
-
-	for f in files:
-		s = importdatatoswitch(n)
-		switches.append(s)
-
-	return switches
+	test_files = list()
+	i=0
+	j=0
+	k=0
+	while i < 2*nswitches:
+		k=i
+		for j in range(0,nports):
+			if i < 2*nswitches:
+				test_files.append(files[i])
+				i=i+1
+			else:
+				pass
+		print("Los archivos a importar: \n", test_files)
+		#importdatatoswitch(nports,test_files)
+		test_files = []
+		i=k
+		i = i+1
+	#return switches
 
 def graph(ports,nports):
 

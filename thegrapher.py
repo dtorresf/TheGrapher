@@ -8,7 +8,7 @@ import methodSwitch
 #Graph compute nodes 
 
 #methodServer.importallservers()
-methodServer.graphdfs()
+#methodServer.graphdfs()
 
 
 #s = methodServer.importdatatoserver('/Users/daniela/DevOps/TheGrapher/data/el01cn09_osmonitor.csv')
@@ -16,6 +16,8 @@ methodServer.graphdfs()
 
 
 #Graph Switches 
+
+methodSwitch.importallswitches(2,2)
 
 #s = methodSwitch.importdatatoswitch(2)
 #s.graphports()
