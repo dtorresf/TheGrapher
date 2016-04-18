@@ -11,6 +11,9 @@ import Port
 
 #name,date,rxb,txb,rxm,txm
 
+def grouped(list, n):
+	return zip(*[iter(list)]*n)
+
 def addheadformat(csvfile):
 	'''Adds the head format to the CSV file. Validates existence of the head'''
 	with open(csvfile, 'r') as file:
@@ -44,10 +47,8 @@ def importdatatoswitch(nports,files):
 	'''The function that imports data from CSV format to Switch'''
 	'''I need a function that evaluates files on a directory and gets the info of the files for the ports'''
 	
-	#csv_directory ='/Users/daniela/DevOps/TheGrapher/data/switches/'
-	#files = [csv_directory + 'el01gw01_ibmonitor_Port_0A_ETH_1.csv', csv_directory + 'el01gw01_ibmonitor_Port_1A_ETH_1.csv']
-	
 	ports = list()	
+
 	for i in range(0,nports):
 		'''Fill up an array with ports'''
 		p = importdatatoport(files[i])
@@ -56,29 +57,19 @@ def importdatatoswitch(nports,files):
 	s = Switch.Switch(ports[0].switchname, nports, ports)
 	return s
 
-def importallswitches(nports,nswitches):
+def importallswitches(nports):
 	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
 	data_dir = '/Users/daniela/DevOps/TheGrapher/data/switches/*'
 	files = glob.glob(data_dir)
 	switches = list()
-	test_files = list()
-	i=0
-	j=0
-	k=0
-	while i < 2*nswitches:
-		k=i
-		for j in range(0,nports):
-			if i < 2*nswitches:
-				test_files.append(files[i])
-				i=i+1
-			else:
-				pass
-		print("Los archivos a importar: \n", test_files)
-		#importdatatoswitch(nports,test_files)
-		test_files = []
-		i=k
-		i = i+1
-	#return switches
+	
+	zipped = grouped(files,nports)
+
+	for f in zipped:
+		 s = importdatatoswitch(nports,f)
+		 switches.append(s)
+
+	return switches
 
 def graph(ports,nports):
 
@@ -95,9 +86,9 @@ def graph(ports,nports):
 		fig.savefig(graph_name + '_rx' + '.png')
 		fig2.savefig(graph_name + '_tx' + '.png')
 
-def graphdfs():
+def graphdfs(nports):
 	'''Iterates over files and uses the impordata function for each one 
 	and graphs each one'''
-	switches = importallswitches()
+	switches = importallswitches(nports)
 	for s in switches:
 		s.graphports()

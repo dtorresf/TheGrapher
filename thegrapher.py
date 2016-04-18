@@ -17,7 +17,8 @@ import methodSwitch
 
 #Graph Switches 
 
-methodSwitch.importallswitches(2,2)
+# methodSwitch.importallswitches(2,2)
+methodSwitch.graphdfs(2)
 
 #s = methodSwitch.importdatatoswitch(2)
 #s.graphports()
