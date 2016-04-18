@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import re
+import glob
 import Server
 
 #(self,name,cpu,mem,established,timewait,closewait,finw1,finw2,nprocs,nopenf)
@@ -14,7 +14,7 @@ def addheadformat(csvfile):
 	with open(csvfile, 'r') as file:
 		#has_header = csv.Sniffer().has_header(file.read(2048))
 		first_line = file.readline()
-		if 'cpu' not in first_line:
+		if 'name' not in first_line:
 			print("No header")
 			f = open(csvfile)
 			text = f.read()
@@ -36,6 +36,20 @@ def importdatatoserver(csvfile):
 	s = Server.Server(name[2:-2],data[['date','mem']], data[['date','cpu']], data[['date','established']], data[['date','timewait']], data[['date','closewait']], data[['date','finw1']], data[['date','finw2']], data[['date','nprocs']], data[['date','nopenf']])
 	return s
 
+def importallservers():
+	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
+	data_dir = '/Users/daniela/DevOps/TheGrapher/data/computenodes/*'
+	files = glob.glob(data_dir)
+	servers = list()
+
+	for f in files:
+		s = importdatatoserver(f)
+		servers.append(s)
+
+	#print("Servers: ", servers)
+	return servers
+
+
 def graph(data,y,name):
 	'''The function that does the magic'''
 	#Validar si existe 
@@ -46,9 +60,16 @@ def graph(data,y,name):
 	fig = ax.get_figure()
 	fig.savefig(graph_name)
 
-def getdatafiles():
+def getdatafiles():	
 	'''Obtains the data from the servers with ssh'''
 
 def graphdfs():
 	'''Iterates over files and uses the impordata function for each one 
 	and graphs each one'''
+	servers = importallservers()
+	for s in servers:
+		s.graphserver()
+
+
+
+
