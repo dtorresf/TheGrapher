@@ -10,7 +10,7 @@ import Config
 #Graph compute nodes 
 
 # methodServer.importallservers()
-# methodServer.graphdfs()
+methodServer.graphdfs()
 
 
 #s = methodServer.importdatatoserver('/Users/daniela/DevOps/TheGrapher/data/el01cn09_osmonitor.csv')

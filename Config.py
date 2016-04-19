@@ -1,4 +1,5 @@
 import json
+import paramiko
 
 class Config():
 	'''Class that represents the Configuration for the whole thing'''
@@ -31,3 +32,9 @@ class Config():
 			config['gw_number'] = 4
 
 		self.variables = config
+
+	def copydatafiles(self):
+		'''The function that scp the data files from first exalogic node'''
+		cn = self.variables['exalogic_name'] + self.variables['exalogic_cn_prefix'] + '01'
+		data_dir = self.variables['remote_data_dir']
+
