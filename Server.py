@@ -1,4 +1,5 @@
 import methodServer
+import methods 
 
 class Server:
 	'''Class that represents a Server with atributtes to graph'''
@@ -15,23 +16,23 @@ class Server:
 		self.nopenf = nopenf
 
 	def graphcpu(self):
-		methodServer.graph(self.cpu, 'cpu', self.name)
+		methods.graph(self.cpu,'date','cpu', self.name)
 	def graphmem(self):
-		methodServer.graph(self.mem, 'mem', self.name)
+		methods.graph(self.mem,'date','mem', self.name)
 	def graphestablished(self):
-		methodServer.graph(self.established, 'established', self.name)
+		methods.graph(self.established,'date','established', self.name)
 	def graphtimewait(self):
-		methodServer.graph(self.timewait, 'timewait', self.name)
+		methods.graph(self.timewait,'date','timewait', self.name)
 	def graphclosewait(self):
-		methodServer.graph(self.closewait, 'closewait', self.name)
+		methods.graph(self.closewait,'date', 'closewait', self.name)
 	def graphfinw1(self):
-		methodServer.graph(self.finw1, 'finw1', self.name)
+		methods.graph(self.finw1,'date','finw1', self.name)
 	def graphfinw2(self):
-		methodServer.graph(self.finw2, 'finw2', self.name)
+		methods.graph(self.finw2,'date','finw2', self.name)
 	def graphnprocs(self):
-		methodServer.graph(self.nprocs, 'nprocs', self.name)
+		methods.graph(self.nprocs,'date','nprocs', self.name)
 	def graphnopenf(self):
-		methodServer.graph(self.nopenf, 'nopenf', self.name)
+		methods.graph(self.nopenf,'date','nopenf', self.name)
 	def graphserver(self):
 		self.graphcpu()
 		self.graphmem()

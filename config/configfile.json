@@ -1,0 +1,12 @@
+{
+	"exalogic_name": "el01",
+	"exalogic_cn_prefix": "cn",
+	"exalogic_sn_prefix": "sn",
+	"exalogic_gw_prefix": "gw",
+	"exalogic_rack_size": "half",
+	"data_dir": "/Users/daniela/DevOps/TheGrapher/data",
+	"graph_dir": "/Users/daniela/DevOps/TheGrapher/graphs",
+	"computenode_head": "name,date,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf\n",
+	"switch_head": "name,port,date,rxb,txb,rxm,txm\n",
+	"eoib_ports" : 2
+}

@@ -5,14 +5,9 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import glob
+import methods
 import Switch
 import Port
-
-
-#name,date,rxb,txb,rxm,txm
-
-def grouped(list, n):
-	return zip(*[iter(list)]*n)
 
 def addheadformat(csvfile):
 	'''Adds the head format to the CSV file. Validates existence of the head'''
@@ -32,7 +27,9 @@ def addheadformat(csvfile):
 
 def importdatatoport(csvfile):
 	'''The function that imports data from CSV file to a Port'''
-	addheadformat(csvfile)
+	'''The head variable must be global and is on the config file'''
+	head = "name,port,date,rxb,txb,rxm,txm\n"
+	methods.addheadformat(csvfile,head)
 	data=pd.read_csv(csvfile,parse_dates=['date'],dayfirst=True)
 	port_data = data[['port']]
 	name_data = data[['name']]
@@ -63,7 +60,7 @@ def importallswitches(nports):
 	files = glob.glob(data_dir)
 	switches = list()
 	
-	zipped = grouped(files,nports)
+	zipped = methods.grouped(files,nports)
 
 	for f in zipped:
 		 s = importdatatoswitch(nports,f)
@@ -72,7 +69,6 @@ def importallswitches(nports):
 	return switches
 
 def graph(ports,nports):
-
 	graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + ports[0].switchname + '/'
 
 	for i in range(0,nports):
@@ -85,6 +81,9 @@ def graph(ports,nports):
 		fig2 = ax2.get_figure()
 		fig.savefig(graph_name + '_rx' + '.png')
 		fig2.savefig(graph_name + '_tx' + '.png')
+		plt.close(fig)
+		plt.close(fig2)
+
 
 def graphdfs(nports):
 	'''Iterates over files and uses the impordata function for each one 
