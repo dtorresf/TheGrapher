@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import glob
+import os
 
 def grouped(list, n):
 	return zip(*[iter(list)]*n)
@@ -34,6 +35,3 @@ def graph(data,x,y,name):
 	fig = ax.get_figure()
 	fig.savefig(graph_name)
 	plt.close(fig)
-
-def copydatafiles():
-	'''Function that scp the files from directory on first node on Exalogic machine'''

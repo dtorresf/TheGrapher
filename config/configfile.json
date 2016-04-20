@@ -4,12 +4,14 @@
 	"exalogic_sn_prefix": "sn",
 	"exalogic_gw_prefix": "gw",
 	"exalogic_rack_size": "half",
-	"remote_data_dir": "/u01/common/general/Exalogic_Scripts/Monitoring/OSMonitorData",
-	"data_dir": "/Users/daniela/DevOps/TheGrapher/data",
+	"remote_data_dir_cn": "/u01/common/general/Exalogic_Scripts/Monitoring/OSMonitorData",
+	"remote_data_dir_gw": "/u01/common/general/Exalogic_Scripts/Monitoring/IBMonitorData",
+	"data_dir_cn": "/Users/daniela/DevOps/TheGrapher/data/computenodes",
+	"data_dir_gw": "/Users/daniela/DevOps/TheGrapher/data/switches",
 	"graph_dir": "/Users/daniela/DevOps/TheGrapher/graphs",
 	"computenode_head": "name,date,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf\n",
 	"switch_head": "name,port,date,rxb,txb,rxm,txm\n",
 	"eoib_ports" : 2,
-	"ssh_user": "root",
-	"ssh_passw": "welcome1",
+	"ssh_user": "eoc9797a",
+	"ssh_pass": "welcome1"
 }

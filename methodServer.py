@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import glob
 import methods
 import Server
+import os
 
 def importdatatoserver(csvfile):
 	'''The function that imports data from CSV file to a Server'''
