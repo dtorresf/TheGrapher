@@ -9,22 +9,6 @@ import methods
 import Switch
 import Port
 
-def addheadformat(csvfile):
-	'''Adds the head format to the CSV file. Validates existence of the head'''
-	with open(csvfile, 'r') as file:
-		first_line = file.readline()
-		if 'name' not in first_line:
-			print("No header")
-			f = open(csvfile)
-			text = f.read()
-			f.close()
-			# open the file again for writing
-			f = open(csvfile, 'w')
-			f.write("name,port,date,rxb,txb,rxm,txm\n")
-			# write the original contents
-			f.write(text)
-			f.close()
-
 def importdatatoport(csvfile):
 	'''The function that imports data from CSV file to a Port'''
 	'''The head variable must be global and is on the config file'''

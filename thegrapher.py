@@ -16,12 +16,12 @@ if __name__ == "__main__":
 	cf.loadconfigfile("/Users/daniela/DevOps/TheGrapher/config/configfile.json")
 	
 	#2) Bring the data files to the corresponding directories (Validate Existence of directories)
-	cf.copydatafiles()
+	#cf.copydatafiles()
 	#3) Graph all compute nodes
-	methodServer.graphdfs()
+	methodServer.graphdfs(cf)
 	#4) Graph EoIB swithces statistics
+	
 	#5) Generate PPT with graphs
-
 
 #Graph compute nodes 
 

@@ -4,20 +4,9 @@ import subprocess
 
 class Config():
 	'''Class that represents the Configuration for the whole thing'''
-	instance = None
-
-	#Singlenton implementation
-
-	def __call__(cls, *args, **kw):
-		if not cls.instance:
-			cls.instance = super(ConfigFile, cls).__call__(*args, **kw)
-		return cls.instance
-
-	#Initialization for object
 	def __init__(self):
 		self.variables = {} #Empty dictionary that will hold the values of the config file parameters
 
-	#Load config file function
 	def loadconfigfile(self, file):
 		'''Method that loads the file to the structure, JSON file'''
 		config = json.loads(open(file).read())
