@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import os
+import Config
 
 def grouped(list, n):
 	return zip(*[iter(list)]*n)
@@ -23,13 +25,22 @@ def addheadformat(csvfile, head):
 			f.write(text)
 			f.close()
 
-def graph(data,x,y,name):
+def graph(data,x,y,name,cf):
 	'''The function that does the magic, graphs x vs y'''
-	#Validar si existe 
-	graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + name + '/'
+	param_graph_dir = cf.variables['graph_dir']
+	graph_dir= param_graph_dir + '/' + name + '/'
+
+	# graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + name + '/'
+	#cf = Config.Config()
+	#graph_dir = cf.variables['graph_dir'] + '/' + name + '/'
+	#print("Config", cf.variables)
+	
+	if not os.path.exists(graph_dir):
+		os.mkdir(graph_dir) 
 	graph_name=graph_dir + name + '_' + y + '.png'
 	data_to_plot=data[[x,y]]
 	ax=data_to_plot.plot(x=x, y=y)
 	fig = ax.get_figure()
 	fig.savefig(graph_name)
 	plt.close(fig)
+	

@@ -1,21 +1,12 @@
 import json
+import paramiko
+import subprocess
 
 class Config():
 	'''Class that represents the Configuration for the whole thing'''
-	instance = None
-
-	#Singlenton implementation
-
-	def __call__(cls, *args, **kw):
-		if not cls.instance:
-			cls.instance = super(ConfigFile, cls).__call__(*args, **kw)
-		return cls.instance
-
-	#Initialization for object
 	def __init__(self):
 		self.variables = {} #Empty dictionary that will hold the values of the config file parameters
 
-	#Load config file function
 	def loadconfigfile(self, file):
 		'''Method that loads the file to the structure, JSON file'''
 		config = json.loads(open(file).read())
@@ -31,3 +22,22 @@ class Config():
 			config['gw_number'] = 4
 
 		self.variables = config
+
+	def copydatafiles(self):
+		'''The function that scp the data files from first exalogic node'''
+		cn = self.variables['exalogic_name'] + self.variables['exalogic_cn_prefix'] + '01'
+		remote_data_dir_cn = self.variables['remote_data_dir_cn']
+		local_data_cn= self.variables['data_dir_cn']
+
+		remote_data_dir_gw = self.variables['remote_data_dir_gw']
+		local_data_gw= self.variables['data_dir_gw']
+		
+		user = self.variables['ssh_user']
+		password = self.variables['ssh_pass']
+
+		#Compute nodes 
+		scp_command = user + '@' + cn + ':' + remote_data_dir_cn + '/*.csv'
+		proc = subprocess.Popen(['scp',scp_command,local_data_cn], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
+		#Switches 
+		scp_command = user + '@' + cn + ':' + remote_data_dir_gw + '/*.csv'
+		proc = subprocess.Popen(['scp',scp_command,local_data_gw], stdout=subprocess.PIPE,stderr=subprocess.PIPE)
