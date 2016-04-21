@@ -20,13 +20,3 @@ if __name__ == "__main__":
 	#4) Graph EoIB swithces statistics
 	methodSwitch.graphdfs(cf.variables['eoib_ports'],cf)
 	#5) Generate PPT with graphs
-
-<<<<<<< HEAD
-=======
-### Prueba de Calculo de promedios 
-print("Promedio de CPU: ",s.meancpu())
-
-s = methodServer.importdatatoserver('/Users/daniela/DevOps/TheGrapher/data/el01cn09_osmonitor.csv')
-s.graphserver()
-
->>>>>>> master
