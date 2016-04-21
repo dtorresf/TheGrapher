@@ -28,8 +28,10 @@ class Config():
 		cn = self.variables['exalogic_name'] + self.variables['exalogic_cn_prefix'] + '01'
 		remote_data_dir_cn = self.variables['remote_data_dir_cn']
 		local_data_cn= self.variables['data_dir_cn']
+
 		remote_data_dir_gw = self.variables['remote_data_dir_gw']
 		local_data_gw= self.variables['data_dir_gw']
+		
 		user = self.variables['ssh_user']
 		password = self.variables['ssh_pass']
 

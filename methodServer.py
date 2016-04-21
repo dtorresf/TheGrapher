@@ -11,7 +11,6 @@ import Server
 def importdatatoserver(csvfile,cf):
 	'''The function that imports data from CSV file to a Server'''
 	'''The head variable must be global and is on the config file'''
-	# head = "name,date,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf\n"
 	head = cf.variables['computenode_head']
 	methods.addheadformat(csvfile,head)
 	data=pd.read_csv(csvfile,parse_dates=['date'],dayfirst=True)
@@ -25,6 +24,7 @@ def importallservers(cf):
 	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
 	data_dir = cf.variables['data_dir_cn'] + '/*'
 	files = glob.glob(data_dir)
+
 	servers = list()
 
 	for f in files:
@@ -38,4 +38,4 @@ def graphdfs(cf):
 	and graphs each one'''
 	servers = importallservers(cf)
 	for s in servers:
-		s.graphserver()
+		s.graphserver(cf)

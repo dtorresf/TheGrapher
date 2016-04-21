@@ -25,9 +25,12 @@ def addheadformat(csvfile, head):
 			f.write(text)
 			f.close()
 
-def graph(data,x,y,name):
+def graph(data,x,y,name,cf):
 	'''The function that does the magic, graphs x vs y'''
-	graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + name + '/'
+	param_graph_dir = cf.variables['graph_dir']
+	graph_dir= param_graph_dir + '/' + name + '/'
+
+	# graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + name + '/'
 	#cf = Config.Config()
 	#graph_dir = cf.variables['graph_dir'] + '/' + name + '/'
 	#print("Config", cf.variables)

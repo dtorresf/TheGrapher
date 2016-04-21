@@ -8,5 +8,5 @@ class Switch:
 		self.nports = nports
 		self.ports = ports
 
-	def graphports(self):
-			methodSwitch.graph(self.ports, self.nports)
+	def graphports(self,cf):
+			methodSwitch.graph(self.ports, self.nports,cf)

@@ -15,34 +15,34 @@ class Server:
 		self.nprocs = nprocs
 		self.nopenf = nopenf
 
-	def graphcpu(self):
-		methods.graph(self.cpu,'date','cpu', self.name)
-	def graphmem(self):
-		methods.graph(self.mem,'date','mem', self.name)
-	def graphestablished(self):
-		methods.graph(self.established,'date','established', self.name)
-	def graphtimewait(self):
-		methods.graph(self.timewait,'date','timewait', self.name)
-	def graphclosewait(self):
-		methods.graph(self.closewait,'date', 'closewait', self.name)
-	def graphfinw1(self):
-		methods.graph(self.finw1,'date','finw1', self.name)
-	def graphfinw2(self):
-		methods.graph(self.finw2,'date','finw2', self.name)
-	def graphnprocs(self):
-		methods.graph(self.nprocs,'date','nprocs', self.name)
-	def graphnopenf(self):
-		methods.graph(self.nopenf,'date','nopenf', self.name)
-	def graphserver(self):
-		self.graphcpu()
-		self.graphmem()
-		self.graphestablished()
-		self.graphtimewait()
-		self.graphclosewait()
-		self.graphfinw1()
-		self.graphfinw2()
-		self.graphnprocs()
-		self.graphnopenf()
+	def graphcpu(self,cf):
+		methods.graph(self.cpu,'date','cpu', self.name,cf)
+	def graphmem(self,cf):
+		methods.graph(self.mem,'date','mem', self.name,cf)
+	def graphestablished(self,cf):
+		methods.graph(self.established,'date','established', self.name,cf)
+	def graphtimewait(self,cf):
+		methods.graph(self.timewait,'date','timewait', self.name,cf)
+	def graphclosewait(self,cf):
+		methods.graph(self.closewait,'date', 'closewait', self.name,cf)
+	def graphfinw1(self,cf):
+		methods.graph(self.finw1,'date','finw1', self.name,cf)
+	def graphfinw2(self,cf):
+		methods.graph(self.finw2,'date','finw2', self.name,cf)
+	def graphnprocs(self,cf):
+		methods.graph(self.nprocs,'date','nprocs', self.name,cf)
+	def graphnopenf(self,cf):
+		methods.graph(self.nopenf,'date','nopenf', self.name,cf)
+	def graphserver(self,cf):
+		self.graphcpu(cf)
+		self.graphmem(cf)
+		self.graphestablished(cf)
+		self.graphtimewait(cf)
+		self.graphclosewait(cf)
+		self.graphfinw1(cf)
+		self.graphfinw2(cf)
+		self.graphnprocs(cf)
+		self.graphnopenf(cf)
 	def meancpu(self):
 		return self.cpu.mean()
 	def meanmem(self):
