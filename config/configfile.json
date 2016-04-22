@@ -9,6 +9,7 @@
 	"data_dir_cn": "/Users/daniela/DevOps/TheGrapher/data/computenodes",
 	"data_dir_gw": "/Users/daniela/DevOps/TheGrapher/data/switches",
 	"graph_dir": "/Users/daniela/DevOps/TheGrapher/graphs",
+	"report_file": "/Users/daniela/DevOps/TheGrapher/report/report.ppt",
 	"computenode_head": "name,date,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf\n",
 	"switch_head": "name,port,date,rxb,txb,rxm,txm\n",
 	"eoib_ports" : 2,
