@@ -19,12 +19,12 @@ The variables recolected for the compute nodes are:
 8. Number of processes runing 
 8. Number of open files
 
- The variables recolected for the switches are:
+The variables recolected for the switches are:
 
- 1. Switch Name
- 2. Port Name 
- 3. TX in bytes
- 4. RX in bytes 
+1. Switch Name
+2. Port Name 
+3. TX in bytes
+4. RX in bytes 
 
 Is it important to configure the first script in all the compute nodes's crontab and the second one on the first compute node. 
 
