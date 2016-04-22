@@ -1,55 +1,105 @@
+'''
+TheGrapher takes custom generated CSV files with Exalogic's compute nodes and 
+IB Switches's information, loads them into python structures and graphs the variables
+recolected. 
+
+Copyright (C) 2016  Daniela Torres Faria 
+GitHub: dtorresf
+Mail: daniela.torres.f@gmail.com
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later versi
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more detai
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+'''
+
 import csv
 import pandas as pd
 import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-import re
+import glob
+import methods
 import Switch
+import Port
+import os
 
-#(self,name,cpu,mem,established,timewait,closewait,finw1,finw2,nprocs,nopenf)
-'''
-def addheadformat(csvfile):
-	Adds the head format to the CSV file. Validates existence of the head
-	with open(csvfile, 'r') as file:
-		#has_header = csv.Sniffer().has_header(file.read(2048))
-		first_line = file.readline()
-		if 'cpu' not in first_line:
-			print("No header")
-			f = open(csvfile)
-			text = f.read()
-			f.close()
-			# open the file again for writing
-			f = open(csvfile, 'w')
-			f.write("name,date,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf\n")
-			# write the original contents
-			f.write(text)
-			f.close()
-
-def importdatatoserver(csvfile):
-	The function that imports data from CSV file to a Server
-	addheadformat(csvfile)
+def importdatatoport(csvfile,cf):
+	'''The function that imports data from CSV file to a Port'''
+	'''The head variable must be global and is on the config file'''
+	# head = "name,port,date,rxb,txb,rxm,txm\n"
+	head = cf.variables['switch_head']
+	methods.addheadformat(csvfile,head)
 	data=pd.read_csv(csvfile,parse_dates=['date'],dayfirst=True)
+	port_data = data[['port']]
 	name_data = data[['name']]
+	port_value = port_data.values
 	name_value = name_data.values
+	port = str(port_value[0])
 	name = str(name_value[0])
-	s = Server.Server(name[2:-2],data[['date','mem']], data[['date','cpu']], data[['date','established']], data[['date','timewait']], data[['date','closewait']], data[['date','finw1']], data[['date','finw2']], data[['date','nprocs']], data[['date','nopenf']])
+	p = Port.Port(port[2:-2],name[2:-2],data[['date','rxb']], data[['date','txb']])
+	return p
+
+def importdatatoswitch(nports,files,cf):
+	'''The function that imports data from CSV format to Switch'''
+	'''I need a function that evaluates files on a directory and gets the info of the files for the ports'''
+	
+	ports = list()	
+
+	for i in range(0,nports):
+		'''Fill up an array with ports'''
+		p = importdatatoport(files[i],cf)
+		ports.append(p)
+
+	s = Switch.Switch(ports[0].switchname, nports, ports)
 	return s
 
-def graph(data,y,name):
-	The function that does the magic
-	#Validar si existe 
-	graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + name + '/'
-	graph_name=graph_dir + name + '_' + y + '.png'
-	data_to_plot=data[['date',y]]
-	ax=data_to_plot.plot(x='date', y=y)
-	fig = ax.get_figure()
-	fig.savefig(graph_name)
+def importallswitches(nports,cf):
+	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
+	#data_dir = '/Users/daniela/DevOps/TheGrapher/data/switches/*'
+	data_dir = cf.variables['data_dir_gw'] + '/*'
+	files = glob.glob(data_dir)
+	switches = list()
+	
+	zipped = methods.grouped(files,nports)
 
-def getdatafiles():	
-	Obtains the data from the servers with ssh
+	for f in zipped:
+		 s = importdatatoswitch(nports,f,cf)
+		 switches.append(s)
 
-def graphdfs():
-	Iterates over files and uses the impordata function for each one 
-	and graphs each one
-'''
+	return switches
+
+def graph(ports,nports,cf):
+	param_graph_dir = cf.variables['graph_dir']
+	graph_dir= param_graph_dir + '/' + ports[0].switchname + '/'
+
+	if not os.path.exists(graph_dir):
+		os.mkdir(graph_dir) 
+	for i in range(0,nports):
+		graph_name=graph_dir + ports[i].switchname + '_' + ports[i].name
+		data_to_plot1=ports[i].rx
+		data_to_plot2=ports[i].tx
+		ax= data_to_plot1.plot(x='date', y='rxb',style='-b', grid=True)
+		ax2= data_to_plot2.plot(x='date', y='txb', style='-b', grid=True)
+		fig = ax.get_figure()
+		fig2 = ax2.get_figure()
+		fig.savefig(graph_name + '_rx' + '.png')
+		fig2.savefig(graph_name + '_tx' + '.png')
+		plt.close(fig)
+		plt.close(fig2)
+
+
+def graphdfs(nports,cf):
+	'''Iterates over files and uses the impordata function for each one 
+	and graphs each one'''
+	switches = importallswitches(nports,cf)
+	for s in switches:
+		s.graphports(cf)
