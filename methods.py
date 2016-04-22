@@ -1,3 +1,25 @@
+'''
+TheGrapher takes custom generated CSV files with Exalogic's compute nodes and 
+IB Switches's information, loads them into python structures and graphs the variables
+recolected. 
+
+Copyright (C) 2016  Daniela Torres Faria 
+GitHub: dtorresf
+Mail: daniela.torres.f@gmail.com
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later versi
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more detai
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+'''
+
 import csv
 import pandas as pd
 import numpy as np
@@ -30,11 +52,6 @@ def graph(data,x,y,name,cf):
 	param_graph_dir = cf.variables['graph_dir']
 	graph_dir= param_graph_dir + '/' + name + '/'
 
-	# graph_dir='/Users/daniela/DevOps/TheGrapher/graphs/' + name + '/'
-	#cf = Config.Config()
-	#graph_dir = cf.variables['graph_dir'] + '/' + name + '/'
-	#print("Config", cf.variables)
-	
 	if not os.path.exists(graph_dir):
 		os.mkdir(graph_dir) 
 	graph_name=graph_dir + name + '_' + y + '.png'
@@ -44,3 +61,6 @@ def graph(data,x,y,name,cf):
 	fig.savefig(graph_name)
 	plt.close(fig)
 	
+
+def generatereport():
+	pass		
