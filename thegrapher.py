@@ -36,9 +36,14 @@ if __name__ == "__main__":
 	cf = Config.Config()
 	cf.loadconfigfile("/Users/daniela/DevOps/TheGrapher/config/configfile.json")
 	#2) Bring the data files to the corresponding directories (Validate Existence of directories)
-	cf.copydatafiles()
+	# cf.copydatafiles()
 	#3) Graph all compute nodes
-	methodServer.graphdfs(cf)
+	servers = methodServer.importallservers(cf)
+	# methodServer.graphdfs(cf,servers)
 	#4) Graph EoIB swithces statistics
-	methodSwitch.graphdfs(cf.variables['eoib_ports'],cf)
+	# methodSwitch.graphdfs(cf.variables['eoib_ports'],cf)
 	#5) Generate PPT with graphs
+	# mean = servers[0].meancpu()
+	# print("Promedio CPU nodo: ", servers[0].name , " Promedio CPU: ", mean[0])
+	methods.generatepptxreport(cf,servers)
+
