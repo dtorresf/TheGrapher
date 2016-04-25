@@ -55,9 +55,9 @@ def importallservers(cf):
 
 	return servers
 
-def graphdfs(cf):
+def graphdfs(cf,servers):
 	'''Iterates over files and uses the impordata function for each one 
 	and graphs each one'''
-	servers = importallservers(cf)
+	# servers = importallservers(cf)
 	for s in servers:
 		s.graphserver(cf)
