@@ -12,7 +12,7 @@
 	"report_file": "/Users/daniela/DevOps/TheGrapher/report/report.ppt",
 	"computenode_head": "name,date,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf\n",
 	"switch_head": "name,port,date,rxb,txb,rxm,txm\n",
-	"eoib_ports" : 2,
-	"ssh_user": "eoc9797a",
-	"ssh_pass": "welcome1"
+	"pptx_template": "/Users/daniela/DevOps/TheGrapher/data/Oracle_Template.pptx",
+	"pptx_report": "/Users/daniela/DevOps/TheGrapher/data/Exalogic_Report.pptx",
+	"eoib_ports" : 2
 }
