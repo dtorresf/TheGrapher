@@ -20,6 +20,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import sys, getopt
 from Server import Server
 from Switch import Switch
 import methodServer
@@ -27,19 +28,38 @@ import methodSwitch
 import methods
 import Config
 
-'''Defitinion of Main Method'''
 
-if __name__ == "__main__":
+def main(argv):
+	'''Handle some arguments
+		Optional:
+			-h : Display help usage message.
+			-c : Especify configuration file.
 
+		If not configuration file is especified generate one from the command line
+	'''
+	global configfile
+	try:
+		opts, args = getopt.getopt(argv,"hc:",["cfile="])
+	except getopt.GetoptError:
+		print("thegrapher.py -c [configfile]")
+		sys.exit(2)
+	for opt, arg in opts:
+		if opt in ("-h", "--help"):
+			print("thegrapher.py -c [configfile]")
+			sys.exit()
+		elif opt in ("-c", "--cfile"):
+			configfile = arg
+
+def thegrapher(configfile):
 	#1) Load config file 
 	cf = Config.Config()
 	print("* Loading Configuration File ...")
-	cf.loadconfigfile("/Users/daniela/DevOps/TheGrapher/config/configfile.json")
+	cf.loadconfigfile(configfile)
 	print("* Validate Configuration File Format  ...")
-	cf.validateconf()
+	# cf.validateconf()
 	#2) Bring the data files to the corresponding directories (Validate Existence of directories)
 	print("* Copy data files from exalogic first compute node  ...")
-	cf.copydatafiles()
+	# cf.copydatafiles()
 	#3) Graph all compute nodes
 	print("* Loading data for servers  ...")
 	servers = methodServer.importallservers(cf)
@@ -54,3 +74,15 @@ if __name__ == "__main__":
 	print("* Generate Final Report  ...")
 	methods.generatepptxreport(cf,servers,switches)
 	print("*  ENJOY :) * ")
+
+if __name__ == "__main__":
+	'''Main program'''
+	configfile = ''
+	main(sys.argv[1:])
+
+	if configfile:
+		thegrapher(configfile)
+	else:
+		#Call function to generate config file from cmd
+		#Execute thegrapher function
+		print("Please ... configfile ... Please")

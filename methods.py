@@ -107,7 +107,7 @@ def generatepptxreport(cf,servers,switches):
 	
 			image_slide = prs.slides.add_slide(prs.slide_layouts[25])
 			title = image_slide.shapes.title
-			title.text = "Switch " + sw.name + " Exalogic Report" 
+			title.text = "Switch " + sw.name + " " + p.name + " Exalogic Report" 
 			
 			placeholder = image_slide.placeholders[1] #Capture first image placeholder for TX
 			image = cf.variables['graph_dir'] + "/" + sw.name + "/" + sw.name + "_" + p.name + "_rx.png"
