@@ -64,8 +64,7 @@ def importdatatoswitch(nports,files,cf):
 
 def importallswitches(nports,cf):
 	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
-	#data_dir = '/Users/daniela/DevOps/TheGrapher/data/switches/*'
-	data_dir = cf.variables['data_dir_gw'] + '/*'
+	data_dir = cf.variables['data_files_dir'] + '/IBMonitorData' +'/*.csv'
 	files = glob.glob(data_dir)
 	switches = list()
 	
@@ -97,9 +96,9 @@ def graph(ports,nports,cf):
 		plt.close(fig2)
 
 
-def graphdfs(nports,cf):
+def graphdfs(nports,cf,switches):
 	'''Iterates over files and uses the impordata function for each one 
 	and graphs each one'''
-	switches = importallswitches(nports,cf)
+	# switches = importallswitches(nports,cf)
 	for s in switches:
 		s.graphports(cf)

@@ -5,3 +5,8 @@ class Port:
 		self.switchname = switchname
 		self.rx = rx
 		self.tx = tx
+
+	def meanrx(self):
+		return self.rx.mean()
+	def meantx(self):
+		return self.tx.mean()

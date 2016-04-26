@@ -44,7 +44,7 @@ def importdatatoserver(csvfile,cf):
 
 def importallservers(cf):
 	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
-	data_dir = cf.variables['data_dir_cn'] + '/*'
+	data_dir = cf.variables['data_files_dir'] + '/OSMonitorData' +'/*.csv'
 	files = glob.glob(data_dir)
 
 	servers = list()
