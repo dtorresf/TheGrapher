@@ -20,7 +20,6 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
-
 from Server import Server
 from Switch import Switch
 import methodServer
@@ -34,16 +33,24 @@ if __name__ == "__main__":
 
 	#1) Load config file 
 	cf = Config.Config()
+	print("* Loading Configuration File ...")
 	cf.loadconfigfile("/Users/daniela/DevOps/TheGrapher/config/configfile.json")
+	print("* Validate Configuration File Format  ...")
+	cf.validateconf()
 	#2) Bring the data files to the corresponding directories (Validate Existence of directories)
-	# cf.copydatafiles()
+	print("* Copy data files from exalogic first compute node  ...")
+	cf.copydatafiles()
 	#3) Graph all compute nodes
+	print("* Loading data for servers  ...")
 	servers = methodServer.importallservers(cf)
-	# methodServer.graphdfs(cf,servers)
+	print("* Graph Servers  ... (This could take a while)")
+	methodServer.graphdfs(cf,servers)
 	#4) Graph EoIB swithces statistics
-	# methodSwitch.graphdfs(cf.variables['eoib_ports'],cf)
+	print("* Loading data for switches ...")
+	switches = methodSwitch.importallswitches(cf.variables['eoib_ports'],cf)
+	print("* Graph Switches  ...")
+	methodSwitch.graphdfs(cf.variables['eoib_ports'],cf,switches)
 	#5) Generate PPT with graphs
-	# mean = servers[0].meancpu()
-	# print("Promedio CPU nodo: ", servers[0].name , " Promedio CPU: ", mean[0])
-	methods.generatepptxreport(cf,servers)
-
+	print("* Generate Final Report  ...")
+	methods.generatepptxreport(cf,servers,switches)
+	print("*  ENJOY :) * ")
