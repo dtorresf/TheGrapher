@@ -47,7 +47,7 @@ The Grapher's output should be a report with all the recolected data and graphs.
 
 
 ### To do list
-- [ ] Code the generation of the automatic report on pptx format.
+- [X] Code the generation of the automatic report on pptx format.
 - [ ] Code the generation of the automatic report on pdf format.
 - [ ] Code the generation of the automatic report on html format.
 - [ ] Put a more explicit help function.

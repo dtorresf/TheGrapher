@@ -29,6 +29,7 @@ import matplotlib.pyplot as plt
 import os
 import Config
 from pptx import Presentation
+from datetime import datetime
 
 def grouped(list, n):
 	return zip(*[iter(list)]*n)
@@ -63,9 +64,10 @@ def graph(data,x,y,name,cf):
 	plt.close(fig)
 	
 
-def generatepptxreport(cf,servers):
+def generatepptxreport(cf,servers,switches):
 
-	report_name = cf.variables['pptx_report']
+	date = datetime.now().strftime("%d%m%Y-%H%M%S")
+	report_name = cf.variables['pptx_report'] + '/' + 'Exalogic_Report_'+ date + '.pptx'
 	#Title presentation
 
 	prs = Presentation(cf.variables['pptx_template'])
@@ -73,9 +75,9 @@ def generatepptxreport(cf,servers):
 	title = title_slide.shapes.title
 	title.text = "Informe de desempeño de nodos Exalogic"
 	placeholder_content = title_slide.placeholders[1]
-	placeholder_content.text = 'EXALOGIC THE GRAPHER REPORT'
+	placeholder_content.text = 'EXALOGIC THE GRAPHER REPORT - ' + date 
 
-	#Slide with images 
+	#Slide with images for Servers
 
 	for s in servers:
 		cpu_mean = str(s.meancpu()[0])
@@ -94,5 +96,27 @@ def generatepptxreport(cf,servers):
 		image = cf.variables['graph_dir'] + "/" + s.name + "/" + s.name + "_mem.png"
 		picture = placeholder.insert_picture(image)
 		image_slide.placeholders[14].text = "Promedio de Memoria: " + mem_mean
+
+	#Slide with images for Switches
+
+	for sw in switches:
+		ports = sw.ports
+		for p in ports:
+			rx_mean = str(p.meanrx()[0])
+			tx_mean = str(p.meantx()[0])
+	
+			image_slide = prs.slides.add_slide(prs.slide_layouts[25])
+			title = image_slide.shapes.title
+			title.text = "Switch " + sw.name + " Exalogic Report" 
+			
+			placeholder = image_slide.placeholders[1] #Capture first image placeholder for TX
+			image = cf.variables['graph_dir'] + "/" + sw.name + "/" + sw.name + "_" + p.name + "_rx.png"
+			picture = placeholder.insert_picture(image)
+			image_slide.placeholders[2].text = "Promedio: " + rx_mean
+			
+			placeholder = image_slide.placeholders[13]  # idx key, not position
+			image = cf.variables['graph_dir'] + "/" + sw.name + "/" + sw.name + "_" + p.name + "_tx.png"
+			picture = placeholder.insert_picture(image)
+			image_slide.placeholders[14].text = "Promedio: " + tx_mean
 
 	prs.save(report_name)
