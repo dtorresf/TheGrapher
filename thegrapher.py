@@ -50,13 +50,13 @@ def main(argv):
 		elif opt in ("-c", "--cfile"):
 			configfile = arg
 
-def thegrapher(configfile):
+def thegrapher(cf):
 	#1) Load config file 
-	cf = Config.Config()
-	print("* Loading Configuration File ...")
-	cf.loadconfigfile(configfile)
+	if cf.file:
+		print("* Loading Configuration File ...")
+		cf.loadconfigfile(cf.file)
 	print("* Validate Configuration File Format  ...")
-	# cf.validateconf()
+	cf.validateconf()
 	#2) Bring the data files to the corresponding directories (Validate Existence of directories)
 	print("* Copy data files from exalogic first compute node  ...")
 	# cf.copydatafiles()
@@ -79,10 +79,16 @@ if __name__ == "__main__":
 	'''Main program'''
 	configfile = ''
 	main(sys.argv[1:])
+	
+	cf = Config.Config()
 
 	if configfile:
-		thegrapher(configfile)
+		cf.file = configfile
+		thegrapher(cf)
 	else:
 		#Call function to generate config file from cmd
 		#Execute thegrapher function
 		print("Please ... configfile ... Please")
+		cf.generateconfigfile()
+		thegrapher(cf)
+
