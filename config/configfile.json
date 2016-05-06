@@ -1,11 +1,10 @@
 {
-	"exalogic_name": "el01",
+	"exalogic_name": "el02",
 	"exalogic_cn_prefix": "cn",
 	"exalogic_sn_prefix": "sn",
 	"exalogic_gw_prefix": "gw",
 	"exalogic_rack_size": "half",
-	"remote_data_dir_cn": "/u01/common/general/Exalogic_Scripts/Monitoring/OSMonitorData",
-	"remote_data_dir_gw": "/u01/common/general/Exalogic_Scripts/Monitoring/IBMonitorData",
+	"remote_data_dir": "/u01/common/general/Exalogic_Scripts/Monitoring",
 	"data_files_dir": "/Users/daniela/DevOps/TheGrapher/data",
 	"graph_dir": "/Users/daniela/DevOps/TheGrapher/graphs",
 	"computenode_head": "name,date,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf\n",

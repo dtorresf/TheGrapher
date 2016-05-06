@@ -45,6 +45,11 @@ def importdatatoport(csvfile,cf):
 	name_value = name_data.values
 	port = str(port_value[0])
 	name = str(name_value[0])
+
+	#Convert to KB from bytes 
+	methods.dividedfcolumn(data,'rxb',1024)
+	methods.dividedfcolumn(data,'txb',1024)
+
 	p = Port.Port(port[2:-2],name[2:-2],data[['date','rxb']], data[['date','txb']])
 	return p
 

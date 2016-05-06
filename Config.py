@@ -176,9 +176,10 @@ class Config():
 	def copydatafiles(self):
 		'''The function that scp the data files from first exalogic node'''
 		cn = self.variables['exalogic_name'] + self.variables['exalogic_cn_prefix'] + '01'
-		remote_data_dir_cn = self.variables['remote_data_dir_cn']
+		remote_data_dir_cn = self.variables['remote_data_dir'] + '/OSMonitorData'
 		local_data= self.variables['data_files_dir']
-		remote_data_dir_gw = self.variables['remote_data_dir_gw']
+		remote_data_dir_gw = self.variables['remote_data_dir'] + '/IBMonitorData'
+		remote_data_dir_zfs = self.variables['remote_data_dir'] + '/ZFSstatsData'
 		
 		user = self.variables['ssh_user']
 		key = self.variables['ssh_key']
@@ -190,3 +191,7 @@ class Config():
 		#Switches 
 		ssh=SSHSession.SSHSession(cn,user,key_file=open(key,'r'))
 		ssh.get_all(remote_data_dir_gw,local_data) 
+
+		#ZFS 
+		ssh=SSHSession.SSHSession(cn,user,key_file=open(key,'r'))
+		ssh.get_all(remote_data_dir_zfs,local_data) 

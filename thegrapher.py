@@ -27,6 +27,7 @@ import methodServer
 import methodSwitch
 import methods
 import Config
+from ZFSServer import ZFSServer
 
 
 def main(argv):
@@ -50,6 +51,33 @@ def main(argv):
 		elif opt in ("-c", "--cfile"):
 			configfile = arg
 
+def Servers(cf):
+	print("* Loading data for servers  ...")
+	servers = methodServer.importallservers(cf)
+	print("* Graph Servers  ... (This could take a while)")
+	methodServer.graphdfs(cf,servers)
+	return servers
+
+def Switches(cf):
+	print("* Loading data for switches ...")
+	switches = methodSwitch.importallswitches(cf.variables['eoib_ports'],cf)
+	print("* Graph Switches  ...")
+	methodSwitch.graphdfs(cf.variables['eoib_ports'],cf,switches)
+	return switches
+
+def ZFS(cf):
+	print("* Loading data for ZFS ...")
+	zfs = ZFSServer()
+	zfs.importdatatozfs(cf)
+	zfs.graphzfs(cf)
+	print("* Graph ZFS  ...")
+	return zfs
+
+def reportPPTX(cf,servers,switches,zfs):
+	print("* Generate Final Report  ...")
+	methods.generatepptxreport(cf,servers,switches,zfs)
+	print("*  ENJOY :) * ")
+
 def thegrapher(cf):
 	#1) Load config file 
 	if cf.file:
@@ -58,22 +86,17 @@ def thegrapher(cf):
 	print("* Validate Configuration File Format  ...")
 	cf.validateconf()
 	#2) Bring the data files to the corresponding directories (Validate Existence of directories)
-	print("* Copy data files from exalogic first compute node  ...")
+	# print("* Copy data files from exalogic first compute node  ...")
 	# cf.copydatafiles()
 	#3) Graph all compute nodes
-	print("* Loading data for servers  ...")
-	servers = methodServer.importallservers(cf)
-	print("* Graph Servers  ... (This could take a while)")
-	methodServer.graphdfs(cf,servers)
+	servers=Servers(cf)
 	#4) Graph EoIB swithces statistics
-	print("* Loading data for switches ...")
-	switches = methodSwitch.importallswitches(cf.variables['eoib_ports'],cf)
-	print("* Graph Switches  ...")
-	methodSwitch.graphdfs(cf.variables['eoib_ports'],cf,switches)
-	#5) Generate PPT with graphs
-	print("* Generate Final Report  ...")
-	methods.generatepptxreport(cf,servers,switches)
-	print("*  ENJOY :) * ")
+	switches=Switches(cf)
+	#5) Graph ZFS data
+	zfs=ZFS(cf)
+	#6) Generate PPT with graphs
+	reportPPTX(cf, servers, switches, zfs)
+
 
 if __name__ == "__main__":
 	'''Main program'''
