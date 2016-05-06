@@ -17,15 +17,15 @@ class ZFSServer:
 		self.diskusge = pd.DataFrame()
 
 	def graphcpu(self,cf):
-		methods.graph(self.cpu,'Start Time (UTC)','Average percent', self.name,cf)
+		methods.graph(self.cpu,'Start Time (UTC)','Average percent', self.name,cf,'% CPU','darkturquoise')
 	def graphmem(self,cf):
-		methods.graph(self.mem,'Start Time (UTC)','Average MB', self.name,cf)
+		methods.graph(self.mem,'Start Time (UTC)','Average MB', self.name,cf,'% Memory','darkturquoise')
 	def graphnfsv4ops(self,cf):
-		methods.graph(self.nfsv4ops,'Start Time (UTC)','Average operations per second', self.name,cf)
+		methods.graph(self.nfsv4ops,'Start Time (UTC)','Average operations per second', self.name,cf,'# NFSV4 Ops','darkturquoise')
 	def graphnetwork(self,cf):
-		methods.graph(self.network,'Start Time (UTC)','Average KB per second', self.name,cf)
+		methods.graph(self.network,'Start Time (UTC)','Average KB per second', self.name,cf,'Kbps','darkturquoise')
 	def grapharc(self,cf):
-		methods.graph(self.arc,'Start Time (UTC)','Average value per second', self.name,cf)
+		methods.graph(self.arc,'Start Time (UTC)','Average value per second', self.name,cf,'# ARC Ops','darkturquoise')
 	def graphhit(self,cf):
 		methods.graph(self.hit,'date', 'closewait', self.name,cf)
 	def graphmiss(self,cf):

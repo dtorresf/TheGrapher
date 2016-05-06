@@ -20,17 +20,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 '''
 
+
 import csv
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
+# matplotlib.use('TkAgg')
+matplotlib.style.use('ggplot')
+import Config
+from datetime import datetime
 import glob
 import methods
 import Switch
 import Port
 import os
+import sys
 
 def importdatatoport(csvfile,cf):
 	'''The function that imports data from CSV file to a Port'''
@@ -85,20 +90,32 @@ def graph(ports,nports,cf):
 	param_graph_dir = cf.variables['graph_dir']
 	graph_dir= param_graph_dir + '/' + ports[0].switchname + '/'
 
-	if not os.path.exists(graph_dir):
-		os.mkdir(graph_dir) 
-	for i in range(0,nports):
-		graph_name=graph_dir + ports[i].switchname + '_' + ports[i].name
-		data_to_plot1=ports[i].rx
-		data_to_plot2=ports[i].tx
-		ax= data_to_plot1.plot(x='date', y='rxb',style='-b', grid=True)
-		ax2= data_to_plot2.plot(x='date', y='txb', style='-b', grid=True)
-		fig = ax.get_figure()
-		fig2 = ax2.get_figure()
-		fig.savefig(graph_name + '_rx' + '.png')
-		fig2.savefig(graph_name + '_tx' + '.png')
-		plt.close(fig)
-		plt.close(fig2)
+	try:
+		if not os.path.exists(graph_dir):
+			os.mkdir(graph_dir) 
+		for i in range(0,nports):
+			graph_name=graph_dir + ports[i].switchname + '_' + ports[i].name
+			data_to_plot1=ports[i].rx
+			data_to_plot2=ports[i].tx
+			s1 = pd.Series(data_to_plot1['rxb']).ewm(span=60).mean()
+			data_to_plot1['rxb'] = s1
+			s2 = pd.Series(data_to_plot2['txb']).ewm(span=60).mean()
+			data_to_plot2['txb'] = s2
+			ax= data_to_plot1.plot(x='date', y='rxb',legend=False)
+			ax2= data_to_plot2.plot(x='date', y='txb',legend=False)
+			ax.set_xlabel("Fecha")
+			ax.set_ylabel("RX(KB)")
+			ax2.set_xlabel("Fecha")
+			ax2.set_ylabel("TX(KB)")
+			fig = ax.get_figure()
+			fig2 = ax2.get_figure()
+			fig.savefig(graph_name + '_rx' + '.png')
+			fig2.savefig(graph_name + '_tx' + '.png')
+			plt.close(fig)
+			plt.close(fig2)
+	except:
+		print("ERROR: Bad data file format, please validate data for switche: ",ports[0].switchname)
+		sys.exit(1)
 
 
 def graphdfs(nports,cf,switches):
