@@ -15,8 +15,6 @@ class Server:
 		self.nprocs = nprocs
 		self.nopenf = nopenf
 
-	def graphcpu2(self,cf):
-		methods.graph2(self.cpu,'date','cpu', self.name,cf)
 	def graphcpu(self,cf):
 		methods.graph(self.cpu,'date','cpu', self.name,cf,'% CPU','darkturquoise')
 	def graphmem(self,cf):

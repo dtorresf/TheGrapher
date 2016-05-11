@@ -25,7 +25,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib
-# matplotlib.use('TkAgg')
 matplotlib.style.use('ggplot')
 import os
 import Config
@@ -84,9 +83,10 @@ def graph(data,x,y,name,cf,ylabel,color):
 		data_to_plot=data[[x,y]]
 		s = pd.Series(data_to_plot[y]).ewm(span=60).mean()
 		data_to_plot[y] = s
-		# ax=data_to_plot.plot(x=x, y=y, ylim=(0, 100),legend=False,color="darkturquoise",title='Consumo de CPU')
 		if y == 'cpu' or y == 'mem' or y == 'Average percent':
 			ax=data_to_plot.plot(x=x, y=y,legend=False,ylim=(0,100),color=color)
+			plt.axhline(y=60, xmin=0, xmax=1, hold=None,color='gold')
+			plt.axhline(y=80, xmin=0, xmax=1, hold=None,color='darkred')
 		else:
 			ax=data_to_plot.plot(x=x, y=y,legend=False,color=color)
 		ax.set_xlabel("Fecha")
@@ -97,7 +97,6 @@ def graph(data,x,y,name,cf,ylabel,color):
 	except TypeError:
 		print("ERROR: Bad data file format, please validate data for node: ",name)
 		sys.exit(1)
-	
 
 def generatepptxreport(cf,servers,switches,zfs):
 
@@ -193,5 +192,14 @@ def generatepptxreport(cf,servers,switches,zfs):
 	image_slide.placeholders[14].text = "Promedio: " + arc_mean + "ops"
 
 	#One slide for network
+	image_slide = prs.slides.add_slide(prs.slide_layouts[24])
+	title = image_slide.shapes.title
+	title.text = "ZFS " + zfs.name + " Exalogic " 
+
+	placeholder = image_slide.placeholders[1] #Capture first image placeholder for TX
+	image = cf.variables['graph_dir'] + "/" + zfs.name + "/" + zfs.name + "_Average KB per second.png"
+	picture = placeholder.insert_picture(image)
+	image_slide.placeholders[2].text = "Promedio: " + nw_mean + "Kbps"
+
 
 	prs.save(report_name)
