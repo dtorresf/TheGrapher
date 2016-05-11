@@ -21,11 +21,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
 import csv
+import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
+# matplotlib.use('TkAgg')
+matplotlib.style.use('ggplot')
 import os
 import Config
 from pptx import Presentation
@@ -53,7 +54,7 @@ def addheadformat(csvfile, head):
 			f.write(text)
 			f.close()
 
-def graph(data,x,y,name,cf):
+def graph3(data,x,y,name,cf):
 	'''The function that does the magic, graphs x vs y'''
 	param_graph_dir = cf.variables['graph_dir']
 	graph_dir= param_graph_dir + '/' + name + '/'
@@ -64,6 +65,32 @@ def graph(data,x,y,name,cf):
 		graph_name=graph_dir + name + '_' + y + '.png'
 		data_to_plot=data[[x,y]]
 		ax=data_to_plot.plot(x=x, y=y)
+		fig = ax.get_figure()
+		fig.savefig(graph_name)
+		plt.close(fig)
+	except TypeError:
+		print("ERROR: Bad data file format, please validate data for node: ",name)
+		sys.exit(1)
+
+def graph(data,x,y,name,cf,ylabel,color):
+	'''The function that does the magic, graphs x vs y'''
+	param_graph_dir = cf.variables['graph_dir']
+	graph_dir= param_graph_dir + '/' + name + '/'
+
+	try:
+		if not os.path.exists(graph_dir):
+			os.mkdir(graph_dir) 
+		graph_name=graph_dir + name + '_' + y + '.png'
+		data_to_plot=data[[x,y]]
+		s = pd.Series(data_to_plot[y]).ewm(span=60).mean()
+		data_to_plot[y] = s
+		# ax=data_to_plot.plot(x=x, y=y, ylim=(0, 100),legend=False,color="darkturquoise",title='Consumo de CPU')
+		if y == 'cpu' or y == 'mem' or y == 'Average percent':
+			ax=data_to_plot.plot(x=x, y=y,legend=False,ylim=(0,100),color=color)
+		else:
+			ax=data_to_plot.plot(x=x, y=y,legend=False,color=color)
+		ax.set_xlabel("Fecha")
+		ax.set_ylabel(ylabel)
 		fig = ax.get_figure()
 		fig.savefig(graph_name)
 		plt.close(fig)

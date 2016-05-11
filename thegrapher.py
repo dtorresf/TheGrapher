@@ -97,6 +97,13 @@ def thegrapher(cf):
 	#6) Generate PPT with graphs
 	reportPPTX(cf, servers, switches, zfs)
 
+def beautiful(cf):
+	print("* Loading Configuration File ...")
+	cf.loadconfigfile(cf.file)	
+	csvfile='/Users/daniela/DevOps/TheGrapher/data/OSMonitorData/el02cn08_osmonitor.csv_01_05_2016'
+	s = methodServer.importdatatoserver(csvfile, cf)
+	s.graphcpu2(cf)
+
 
 if __name__ == "__main__":
 	'''Main program'''
@@ -108,6 +115,7 @@ if __name__ == "__main__":
 	if configfile:
 		cf.file = configfile
 		thegrapher(cf)
+		# beautiful(cf)
 	else:
 		#Call function to generate config file from cmd
 		#Execute thegrapher function
