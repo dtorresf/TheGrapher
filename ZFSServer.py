@@ -1,7 +1,7 @@
-import methodServer
 import methods 
 import pandas as pd
 import glob
+import Pptxr
 
 class ZFSServer:
 	'''Class that represents a ZFSServer with atributtes to graph'''
@@ -86,3 +86,29 @@ class ZFSServer:
 		data=pd.read_csv(csvfiles[6],parse_dates=['Start Time (UTC)'],dayfirst=True)
 		self.network = data[['Start Time (UTC)','Average KB per second']]
 
+	def zfspptxreport(self,cf,pptxr):
+		arc_mean=str(format(self.meanarc()[0],'.2f'))
+		cpu_mean=str(format(self.meancpu()[0],'.2f'))
+		mem_mean=str(format(self.meanmem()[0],'.2f'))
+		nfsv4_mean=str(format(self.meannfsv4ops()[0],'.2f'))
+		nw_mean=str(format(self.meannetwork()[0],'.2f'))
+
+		#First slide with CPU and Mem
+		title = "ZFS " + self.name + " Exalogic "
+		img1 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average percent.png"
+		textimg1 = "Promedio: " + cpu_mean + "%"
+		img2 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average MB.png"
+		textimg2 = "Promedio: " + mem_mean + "Mb"
+		pptxr.twoimageslidepptx(title,img1,img2,textimg1,textimg2)	
+		#Second slide with NFSV4 and ARC
+		title = "ZFS " + self.name + " Exalogic "
+		img1 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average operations per second.png"
+		textimg1 = "Promedio: " + nfsv4_mean + "ops"
+		img2 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average value per second.png"
+		textimg2 = "Promedio: " + arc_mean + "ops"
+		pptxr.twoimageslidepptx(title,img1,img2,textimg1,textimg2)	
+		#One slide for network
+		title = "ZFS " + self.name + " Exalogic " 
+		img = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average KB per second.png"
+		textimg = "Promedio: " + nw_mean + "Kbps"
+		pptxr.oneimageslidepptx(title,img,textimg)

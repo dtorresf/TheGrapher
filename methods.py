@@ -25,13 +25,15 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib
-# matplotlib.use('TkAgg')
 matplotlib.style.use('ggplot')
 import os
 import Config
 from pptx import Presentation
 from datetime import datetime
 import sys
+import glob
+import Server
+import Switch
 
 def grouped(list, n):
 	return zip(*[iter(list)]*n)
@@ -54,24 +56,6 @@ def addheadformat(csvfile, head):
 			f.write(text)
 			f.close()
 
-def graph3(data,x,y,name,cf):
-	'''The function that does the magic, graphs x vs y'''
-	param_graph_dir = cf.variables['graph_dir']
-	graph_dir= param_graph_dir + '/' + name + '/'
-
-	try:
-		if not os.path.exists(graph_dir):
-			os.mkdir(graph_dir) 
-		graph_name=graph_dir + name + '_' + y + '.png'
-		data_to_plot=data[[x,y]]
-		ax=data_to_plot.plot(x=x, y=y)
-		fig = ax.get_figure()
-		fig.savefig(graph_name)
-		plt.close(fig)
-	except TypeError:
-		print("ERROR: Bad data file format, please validate data for node: ",name)
-		sys.exit(1)
-
 def graph(data,x,y,name,cf,ylabel,color):
 	'''The function that does the magic, graphs x vs y'''
 	param_graph_dir = cf.variables['graph_dir']
@@ -84,9 +68,10 @@ def graph(data,x,y,name,cf,ylabel,color):
 		data_to_plot=data[[x,y]]
 		s = pd.Series(data_to_plot[y]).ewm(span=60).mean()
 		data_to_plot[y] = s
-		# ax=data_to_plot.plot(x=x, y=y, ylim=(0, 100),legend=False,color="darkturquoise",title='Consumo de CPU')
 		if y == 'cpu' or y == 'mem' or y == 'Average percent':
 			ax=data_to_plot.plot(x=x, y=y,legend=False,ylim=(0,100),color=color)
+			plt.axhline(y=60, xmin=0, xmax=1, hold=None,color='gold')
+			plt.axhline(y=80, xmin=0, xmax=1, hold=None,color='darkred')
 		else:
 			ax=data_to_plot.plot(x=x, y=y,legend=False,color=color)
 		ax.set_xlabel("Fecha")
@@ -97,101 +82,47 @@ def graph(data,x,y,name,cf,ylabel,color):
 	except TypeError:
 		print("ERROR: Bad data file format, please validate data for node: ",name)
 		sys.exit(1)
-	
 
-def generatepptxreport(cf,servers,switches,zfs):
+def importallservers(cf):
+	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
+	data_dir = cf.variables['data_files_dir'] + '/OSMonitorData' +'/*'
+	files = glob.glob(data_dir)
 
-	date = datetime.now().strftime("%d%m%Y-%H%M%S")
-	report_name = cf.variables['pptx_report'] + '/' + 'Exalogic_Report_'+ date + '.pptx'
-	#Title presentation
+	servers = list()
 
-	prs = Presentation(cf.variables['pptx_template'])
-	title_slide = prs.slides[0]
-	title = title_slide.shapes.title
-	title.text = "Informe de desempeño de nodos Exalogic"
-	placeholder_content = title_slide.placeholders[1]
-	placeholder_content.text = 'EXALOGIC THE GRAPHER REPORT - ' + date 
+	for f in files:
+		s = Server.Server()
+		s.importdatatoserver(f,cf)
+		servers.append(s)
 
-	#Slide with images for Servers
+	return servers
 
+def graphallservers(cf,servers):
+	'''Iterates over files and uses the impordata function for each one 
+	and graphs each one'''
+	# servers = importallservers(cf)
 	for s in servers:
-		cpu_mean=str(format(s.meancpu()[0],'.2f'))
-		mem_mean=str(format(s.meanmem()[0],'.2f'))
+		s.graphserver(cf)
 
-		image_slide = prs.slides.add_slide(prs.slide_layouts[25])
-		title = image_slide.shapes.title
-		title.text = "Nodo: " + s.name + " Exalogic " 
-		
-		placeholder = image_slide.placeholders[1] #Capture first image placeholder for CPU
-		image = cf.variables['graph_dir'] + "/" + s.name + "/" + s.name + "_cpu.png"
-		picture = placeholder.insert_picture(image)
-		image_slide.placeholders[2].text = "Promedio de consumo CPU: " + cpu_mean + "%"
-		
-		placeholder = image_slide.placeholders[13]  # idx key, not position
-		image = cf.variables['graph_dir'] + "/" + s.name + "/" + s.name + "_mem.png"
-		picture = placeholder.insert_picture(image)
-		image_slide.placeholders[14].text = "Promedio de Memoria: " + mem_mean + "%"
-
-	#Slide with images for Switches
-
-	for sw in switches:
-		ports = sw.ports
-		for p in ports:	
-			rx_mean=str(format(p.meanrx()[0],'.2f'))
-			tx_mean=str(format(p.meantx()[0],'.2f'))
-
-			image_slide = prs.slides.add_slide(prs.slide_layouts[25])
-			title = image_slide.shapes.title
-			title.text = "Switch: " + sw.name + " Puerto: " + p.name + " Exalogic " 
-			
-			placeholder = image_slide.placeholders[1] #Capture first image placeholder for TX
-			image = cf.variables['graph_dir'] + "/" + sw.name + "/" + sw.name + "_" + p.name + "_rx.png"
-			picture = placeholder.insert_picture(image)
-			image_slide.placeholders[2].text = "Promedio: " + rx_mean + "Kbps"
-			
-			placeholder = image_slide.placeholders[13]  # idx key, not position
-			image = cf.variables['graph_dir'] + "/" + sw.name + "/" + sw.name + "_" + p.name + "_tx.png"
-			picture = placeholder.insert_picture(image)
-			image_slide.placeholders[14].text = "Promedio: " + tx_mean + "Kbps"
-
-	#Slide with images for ZFS storage 
-
-	arc_mean=str(format(zfs.meanarc()[0],'.2f'))
-	cpu_mean=str(format(zfs.meancpu()[0],'.2f'))
-	mem_mean=str(format(zfs.meanmem()[0],'.2f'))
-	nfsv4_mean=str(format(zfs.meannfsv4ops()[0],'.2f'))
-	nw_mean=str(format(zfs.meannetwork()[0],'.2f'))
-
-	#First slide with CPU and Mem
-	image_slide = prs.slides.add_slide(prs.slide_layouts[25])
-	title = image_slide.shapes.title
-	title.text = "ZFS " + zfs.name + " Exalogic " 
-
-	placeholder = image_slide.placeholders[1] #Capture first image placeholder for TX
-	image = cf.variables['graph_dir'] + "/" + zfs.name + "/" + zfs.name + "_Average percent.png"
-	picture = placeholder.insert_picture(image)
-	image_slide.placeholders[2].text = "Promedio: " + cpu_mean + "%"
+def importallswitches(nports,cf):
+	'''List files on the data directory and loads each file on a server. Returs a list with all servers'''
+	data_dir = cf.variables['data_files_dir'] + '/IBMonitorData' +'/*.csv'
+	files = glob.glob(data_dir)
+	switches = list()
 	
-	placeholder = image_slide.placeholders[13]  # idx key, not position
-	image = cf.variables['graph_dir'] + "/" + zfs.name + "/" + zfs.name + "_Average MB.png"
-	picture = placeholder.insert_picture(image)
-	image_slide.placeholders[14].text = "Promedio: " + mem_mean + "Mb"
+	zipped = grouped(files,nports)
 
-	#Second slide with NFSV4 and ARC
-	image_slide = prs.slides.add_slide(prs.slide_layouts[25])
-	title = image_slide.shapes.title
-	title.text = "ZFS " + zfs.name + " Exalogic " 
+	for f in zipped:
+		 s = Switch.Switch()
+		 s.importdatatoswitch(nports,f,cf)
+		 switches.append(s)
 
-	placeholder = image_slide.placeholders[1] #Capture first image placeholder for TX
-	image = cf.variables['graph_dir'] + "/" + zfs.name + "/" + zfs.name + "_Average operations per second.png"
-	picture = placeholder.insert_picture(image)
-	image_slide.placeholders[2].text = "Promedio: " + nfsv4_mean + "ops"
-	
-	placeholder = image_slide.placeholders[13]  # idx key, not position
-	image = cf.variables['graph_dir'] + "/" + zfs.name + "/" + zfs.name + "_Average value per second.png"
-	picture = placeholder.insert_picture(image)
-	image_slide.placeholders[14].text = "Promedio: " + arc_mean + "ops"
+	return switches
 
-	#One slide for network
-
-	prs.save(report_name)
+def graphallswitches(nports,cf,switches):
+	'''Iterates over files and uses the impordata function for each one 
+	and graphs each one'''
+	# switches = importallswitches(nports,cf)
+	for s in switches:
+		# graphswitch(s.ports, s.nports,cf)
+		s.graphswitch(cf)
