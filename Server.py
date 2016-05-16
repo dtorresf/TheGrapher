@@ -1,20 +1,58 @@
-import methodServer
-import methods 
+import methods
+import pandas as pd 
+import Pptxr
 
 class Server:
 	'''Class that represents a Server with atributtes to graph'''
-	def __init__(self,name,mem,cpu,established,timewait,closewait,finw1,finw2,nprocs,nopenf):
-		self.name = name
-		self.mem = mem
-		self.cpu = cpu
-		self.established = established
-		self.timewait = timewait
-		self.closewait = closewait
-		self.finw1 = finw1
-		self.finw2 = finw2
-		self.nprocs = nprocs
-		self.nopenf = nopenf
+	def __init__(self):
+		self.name = ''
+		self.mem = pd.DataFrame()
+		self.cpu = pd.DataFrame()
+		self.established = pd.DataFrame()
+		self.timewait = pd.DataFrame()
+		self.closewait = pd.DataFrame()
+		self.finw1 = pd.DataFrame()
+		self.finw2 = pd.DataFrame()
+		self.nprocs = pd.DataFrame()
+		self.nopenf = pd.DataFrame()
 
+	def importdatatoserver(self,csvfile,cf):
+		'''The function that imports data from CSV file to a Server'''
+		'''The head variable must be global and is on the config file'''
+		head = cf.variables['computenode_head']
+		methods.addheadformat(csvfile,head)
+		data=pd.read_csv(csvfile,parse_dates=['date'],dayfirst=True)
+		name_data = data[['name']]
+		name_value = name_data.values
+		name = str(name_value[0])
+		self.name = name[2:-2]
+		self.mem = data[['date','mem']]
+		self.cpu = data[['date','cpu']]
+		self.established = data[['date','established']]
+		self.timewait = data[['date','timewait']]
+		self.closewait = data[['date','closewait']]
+		self.finw1 = data[['date','finw1']]
+		self.finw2 = data[['date','finw2']]
+		self.nprocs = data[['date','nprocs']]
+		self.nopenf = data[['date','nopenf']]
+	def meancpu(self):
+		return self.cpu.mean()
+	def meanmem(self):
+		return self.mem.mean()
+	def meanestablished(self):
+		return self.established.mean()
+	def meantimewait(self):
+		return self.timewait.mean()
+	def meanclosewait(self):
+		return self.closewait.mean()
+	def meanfinw1(self):
+		return self.finw1.mean()
+	def meanfinw2(self):
+		return self.finw2.mean()
+	def meannprocs(self):
+		return self.nprocs.mean()
+	def meannopenf(self):
+		return self.nopenf.mean()
 	def graphcpu(self,cf):
 		methods.graph(self.cpu,'date','cpu', self.name,cf,'% CPU','darkturquoise')
 	def graphmem(self,cf):
@@ -43,21 +81,13 @@ class Server:
 		self.graphfinw2(cf)
 		self.graphnprocs(cf)
 		self.graphnopenf(cf)
-	def meancpu(self):
-		return self.cpu.mean()
-	def meanmem(self):
-		return self.mem.mean()
-	def meanestablished(self):
-		return self.established.mean()
-	def meantimewait(self):
-		return self.timewait.mean()
-	def meanclosewait(self):
-		return self.closewait.mean()
-	def meanfinw1(self):
-		return self.finw1.mean()
-	def meanfinw2(self):
-		return self.finw2.mean()
-	def meannprocs(self):
-		return self.nprocs.mean()
-	def meannopenf(self):
-		return self.nopenf.mean()
+	def serverpptxreport(self,cf,pptxr):
+		cpu_mean=str(format(self.meancpu()[0],'.2f'))
+		mem_mean=str(format(self.meanmem()[0],'.2f'))
+		title = "Nodo: " + self.name + " Exalogic " 
+		img1 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_cpu.png"
+		textimg1 = "Promedio de consumo CPU: " + cpu_mean + "%"
+		img2 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_mem.png"
+		textimg2 = "Promedio de Memoria: " + mem_mean + "%"
+		pptxr.twoimageslidepptx(title,img1,img2,textimg1,textimg2)	
+

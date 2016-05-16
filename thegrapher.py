@@ -23,11 +23,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import sys, getopt
 from Server import Server
 from Switch import Switch
-import methodServer
-import methodSwitch
+from Report import Report
 import methods
 import Config
 from ZFSServer import ZFSServer
+from datetime import datetime
 
 
 def main(argv):
@@ -53,16 +53,16 @@ def main(argv):
 
 def Servers(cf):
 	print("* Loading data for servers  ...")
-	servers = methodServer.importallservers(cf)
+	servers = methods.importallservers(cf)
 	print("* Graph Servers  ... (This could take a while)")
-	methodServer.graphdfs(cf,servers)
+	methods.graphallservers(cf,servers)
 	return servers
 
 def Switches(cf):
 	print("* Loading data for switches ...")
-	switches = methodSwitch.importallswitches(cf.variables['eoib_ports'],cf)
+	switches = methods.importallswitches(cf.variables['eoib_ports'],cf)
 	print("* Graph Switches  ...")
-	methodSwitch.graphdfs(cf.variables['eoib_ports'],cf,switches)
+	methods.graphallswitches(cf.variables['eoib_ports'],cf,switches)
 	return switches
 
 def ZFS(cf):
@@ -75,7 +75,11 @@ def ZFS(cf):
 
 def reportPPTX(cf,servers,switches,zfs):
 	print("* Generate Final Report  ...")
-	methods.generatepptxreport(cf,servers,switches,zfs)
+	date = datetime.now().strftime("%d%m%Y-%H%M%S")
+	name = cf.variables['pptx_report'] + '/' + 'Exalogic_Report_'+ date + '.pptx'
+	r = Report()
+	r.loadreport(date,name,"Informe de desempeño de nodos Exalogic", servers, switches, zfs, cf)
+	r.generatepptxreport()
 	print("*  ENJOY :) * ")
 
 def thegrapher(cf):
@@ -97,14 +101,6 @@ def thegrapher(cf):
 	#6) Generate PPT with graphs
 	reportPPTX(cf, servers, switches, zfs)
 
-def beautiful(cf):
-	print("* Loading Configuration File ...")
-	cf.loadconfigfile(cf.file)	
-	csvfile='/Users/daniela/DevOps/TheGrapher/data/OSMonitorData/el02cn08_osmonitor.csv_01_05_2016'
-	s = methodServer.importdatatoserver(csvfile, cf)
-	s.graphcpu2(cf)
-
-
 if __name__ == "__main__":
 	'''Main program'''
 	configfile = ''
@@ -115,7 +111,6 @@ if __name__ == "__main__":
 	if configfile:
 		cf.file = configfile
 		thegrapher(cf)
-		# beautiful(cf)
 	else:
 		#Call function to generate config file from cmd
 		#Execute thegrapher function
