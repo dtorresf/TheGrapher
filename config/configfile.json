@@ -1,5 +1,5 @@
 {
-	"exalogic_name": "el02",
+	"exalogic_name": "el01",
 	"exalogic_cn_prefix": "cn",
 	"exalogic_sn_prefix": "sn",
 	"exalogic_gw_prefix": "gw",
@@ -12,6 +12,8 @@
 	"pptx_template": "/Users/daniela/DevOps/TheGrapher/data/Oracle_Template.pptx",
 	"pptx_report": "/Users/daniela/DevOps/TheGrapher/data",
 	"ssh_user" : "eoc9797a",
-	"ssh_key" : "/Users/daniela/.ssh/id_rsa",
+	"ssh_key" : "/Users/daniela/.ssh/keys/id_rsa",
 	"eoib_ports" : 2
 }
+
+

@@ -1,6 +1,6 @@
-import methods
-import pandas as pd 
+import Methods
 import Pptxr
+import pandas as pd 
 
 class Server:
 	'''Class that represents a Server with atributtes to graph'''
@@ -20,7 +20,7 @@ class Server:
 		'''The function that imports data from CSV file to a Server'''
 		'''The head variable must be global and is on the config file'''
 		head = cf.variables['computenode_head']
-		methods.addheadformat(csvfile,head)
+		Methods.addheadformat(csvfile,head)
 		data=pd.read_csv(csvfile,parse_dates=['date'],dayfirst=True)
 		name_data = data[['name']]
 		name_value = name_data.values
@@ -54,23 +54,23 @@ class Server:
 	def meannopenf(self):
 		return self.nopenf.mean()
 	def graphcpu(self,cf):
-		methods.graph(self.cpu,'date','cpu', self.name,cf,'% CPU','darkturquoise')
+		Methods.graph(self.cpu,'date','cpu', self.name,cf,'% CPU','darkturquoise')
 	def graphmem(self,cf):
-		methods.graph(self.mem,'date','mem', self.name,cf,'% Memory','darkturquoise')
+		Methods.graph(self.mem,'date','mem', self.name,cf,'% Memory','darkturquoise')
 	def graphestablished(self,cf):
-		methods.graph(self.established,'date','established', self.name,cf,'# Established Connections','darkturquoise')
+		Methods.graph(self.established,'date','established', self.name,cf,'# Established Connections','darkturquoise')
 	def graphtimewait(self,cf):
-		methods.graph(self.timewait,'date','timewait', self.name,cf,'# Time Wait Connections','darkturquoise')
+		Methods.graph(self.timewait,'date','timewait', self.name,cf,'# Time Wait Connections','darkturquoise')
 	def graphclosewait(self,cf):
-		methods.graph(self.closewait,'date', 'closewait', self.name,cf,'# Close Wait Connections','darkturquoise')
+		Methods.graph(self.closewait,'date', 'closewait', self.name,cf,'# Close Wait Connections','darkturquoise')
 	def graphfinw1(self,cf):
-		methods.graph(self.finw1,'date','finw1', self.name,cf,'# Fin Wait 1 Connections','darkturquoise')
+		Methods.graph(self.finw1,'date','finw1', self.name,cf,'# Fin Wait 1 Connections','darkturquoise')
 	def graphfinw2(self,cf):
-		methods.graph(self.finw2,'date','finw2', self.name,cf,'# Fin Wait 2 Connections','darkturquoise')
+		Methods.graph(self.finw2,'date','finw2', self.name,cf,'# Fin Wait 2 Connections','darkturquoise')
 	def graphnprocs(self,cf):
-		methods.graph(self.nprocs,'date','nprocs', self.name,cf, '# Running Processes','darkturquoise')
+		Methods.graph(self.nprocs,'date','nprocs', self.name,cf, '# Running Processes','darkturquoise')
 	def graphnopenf(self,cf):
-		methods.graph(self.nopenf,'date','nopenf', self.name,cf,'# Open Files','darkturquoise')
+		Methods.graph(self.nopenf,'date','nopenf', self.name,cf,'# Open Files','darkturquoise')
 	def graphserver(self,cf):
 		self.graphcpu(cf)
 		self.graphmem(cf)

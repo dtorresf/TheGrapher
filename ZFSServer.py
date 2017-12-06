@@ -1,7 +1,7 @@
-import methods 
-import pandas as pd
-import glob
+import Methods 
 import Pptxr
+import glob
+import pandas as pd
 
 class ZFSServer:
 	'''Class that represents a ZFSServer with atributtes to graph'''
@@ -17,21 +17,21 @@ class ZFSServer:
 		self.diskusge = pd.DataFrame()
 
 	def graphcpu(self,cf):
-		methods.graph(self.cpu,'Start Time (UTC)','Average percent', self.name,cf,'% CPU','darkturquoise')
+		Methods.graph(self.cpu,'Start Time (UTC)','Average percent', self.name,cf,'% CPU','darkturquoise')
 	def graphmem(self,cf):
-		methods.graph(self.mem,'Start Time (UTC)','Average MB', self.name,cf,'% Memory','darkturquoise')
+		Methods.graph(self.mem,'Start Time (UTC)','Average MB', self.name,cf,'% Memory','darkturquoise')
 	def graphnfsv4ops(self,cf):
-		methods.graph(self.nfsv4ops,'Start Time (UTC)','Average operations per second', self.name,cf,'# NFSV4 Ops','darkturquoise')
+		Methods.graph(self.nfsv4ops,'Start Time (UTC)','Average operations per second', self.name,cf,'# NFSV4 Ops','darkturquoise')
 	def graphnetwork(self,cf):
-		methods.graph(self.network,'Start Time (UTC)','Average KB per second', self.name,cf,'Kbps','darkturquoise')
+		Methods.graph(self.network,'Start Time (UTC)','Average KB per second', self.name,cf,'Kbps','darkturquoise')
 	def grapharc(self,cf):
-		methods.graph(self.arc,'Start Time (UTC)','Average value per second', self.name,cf,'# ARC Ops','darkturquoise')
+		Methods.graph(self.arc,'Start Time (UTC)','Average operations per secondarc', self.name,cf,'# ARC Ops','darkturquoise')
 	def graphhit(self,cf):
-		methods.graph(self.hit,'date', 'closewait', self.name,cf)
+		Methods.graph(self.hit,'date', 'closewait', self.name,cf)
 	def graphmiss(self,cf):
-		methods.graph(self.miss,'date','finw1', self.name,cf)
+		Methods.graph(self.miss,'date','finw1', self.name,cf)
 	def graphdiskusage(self,cf):
-		methods.graph(self.diskusage,'date','finw2', self.name,cf)
+		Methods.graph(self.diskusage,'date','finw2', self.name,cf)
 	def graphzfs(self,cf):
 		self.grapharc(cf)
 		self.graphcpu(cf)
@@ -67,23 +67,28 @@ class ZFSServer:
 		self.name = name
 
 		#ARC
+		print(csvfiles[0])
 		data=pd.read_csv(csvfiles[0],parse_dates=['Start Time (UTC)'],dayfirst=True)
-		self.arc = data[['Start Time (UTC)','Average value per second']]
+		self.arc = data[['Start Time (UTC)','Average operations per secondarc']]
 
 		# CPU
+		print(csvfiles[1])
 		data=pd.read_csv(csvfiles[1],parse_dates=['Start Time (UTC)'],dayfirst=True)
 		self.cpu = data[['Start Time (UTC)','Average percent']]
 
 		#Memory
+		print(csvfiles[2])
 		data=pd.read_csv(csvfiles[2],parse_dates=['Start Time (UTC)'],dayfirst=True)
 		self.mem = data[['Start Time (UTC)','Average MB']]
 
 		#NFSV4OPS
+		print(csvfiles[3])
 		data=pd.read_csv(csvfiles[3],parse_dates=['Start Time (UTC)'],dayfirst=True)
 		self.nfsv4ops = data[['Start Time (UTC)','Average operations per second']]
 		
 		#NETWORK
-		data=pd.read_csv(csvfiles[6],parse_dates=['Start Time (UTC)'],dayfirst=True)
+		print(csvfiles[4])
+		data=pd.read_csv(csvfiles[4],parse_dates=['Start Time (UTC)'],dayfirst=True)
 		self.network = data[['Start Time (UTC)','Average KB per second']]
 
 	def zfspptxreport(self,cf,pptxr):
@@ -104,7 +109,7 @@ class ZFSServer:
 		title = "ZFS " + self.name + " Exalogic "
 		img1 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average operations per second.png"
 		textimg1 = "Promedio: " + nfsv4_mean + "ops"
-		img2 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average value per second.png"
+		img2 = cf.variables['graph_dir'] + "/" + self.name + "/" + self.name + "_Average operations per secondarc.png"
 		textimg2 = "Promedio: " + arc_mean + "ops"
 		pptxr.twoimageslidepptx(title,img1,img2,textimg1,textimg2)	
 		#One slide for network

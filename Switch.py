@@ -1,17 +1,17 @@
 import Port
+import Methods
+import Pptxr
+import Config
 import sys
 import csv
+import glob
+import os
+from datetime import datetime
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib
 matplotlib.style.use('ggplot')
-import Config
-from datetime import datetime
-import glob
-import methods
-import os
-import Pptxr
 
 class Switch:
 	'''Class that represents a Switch with atributtes to graph'''

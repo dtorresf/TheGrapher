@@ -1,4 +1,4 @@
-import methods
+import Methods
 import pandas as pd
 
 class Port:
@@ -18,7 +18,7 @@ class Port:
 		'''The function that imports data from CSV file to a Port'''
 		'''The head variable must be global and is on the config file'''
 		head = cf.variables['switch_head']
-		methods.addheadformat(csvfile,head)
+		Methods.addheadformat(csvfile,head)
 		data=pd.read_csv(csvfile,parse_dates=['date'],dayfirst=True)
 		port_data = data[['port']]
 		name_data = data[['name']]
@@ -28,8 +28,8 @@ class Port:
 		name = str(name_value[0])
 
 		#Convert to KB from bytes 
-		methods.dividedfcolumn(data,'rxb',1024)
-		methods.dividedfcolumn(data,'txb',1024)
+		Methods.dividedfcolumn(data,'rxb',1024)
+		Methods.dividedfcolumn(data,'txb',1024)
 
 		self.name = port[2:-2]
 		self.switchname = name[2:-2]

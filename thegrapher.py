@@ -24,7 +24,7 @@ import sys, getopt
 from Server import Server
 from Switch import Switch
 from Report import Report
-import methods
+import Methods
 import Config
 from ZFSServer import ZFSServer
 from datetime import datetime
@@ -53,16 +53,16 @@ def main(argv):
 
 def Servers(cf):
 	print("* Loading data for servers  ...")
-	servers = methods.importallservers(cf)
+	servers = Methods.importallservers(cf)
 	print("* Graph Servers  ... (This could take a while)")
-	methods.graphallservers(cf,servers)
+	Methods.graphallservers(cf,servers)
 	return servers
 
 def Switches(cf):
 	print("* Loading data for switches ...")
-	switches = methods.importallswitches(cf.variables['eoib_ports'],cf)
+	switches = Methods.importallswitches(cf.variables['eoib_ports'],cf)
 	print("* Graph Switches  ...")
-	methods.graphallswitches(cf.variables['eoib_ports'],cf,switches)
+	Methods.graphallswitches(cf.variables['eoib_ports'],cf,switches)
 	return switches
 
 def ZFS(cf):
@@ -82,13 +82,22 @@ def reportPPTX(cf,servers,switches,zfs):
 	r.generatepptxreport()
 	print("*  ENJOY :) * ")
 
+def reportPPTX2(cf,servers,switches):
+	print("* Generate Final Report  ...")
+	date = datetime.now().strftime("%d%m%Y-%H%M%S")
+	name = cf.variables['pptx_report'] + '/' + 'Exalogic_Report_'+ date + '.pptx'
+	r = Report()
+	r.loadreport2(date,name,"Informe de desempeño de nodos Exalogic", servers, switches, cf)
+	r.generatepptxreport2()
+	print("*  ENJOY :) * ")
+
 def thegrapher(cf):
 	#1) Load config file 
 	if cf.file:
 		print("* Loading Configuration File ...")
 		cf.loadconfigfile(cf.file)
 	print("* Validate Configuration File Format  ...")
-	cf.validateconf()
+	#cf.validateconf()
 	#2) Bring the data files to the corresponding directories (Validate Existence of directories)
 	# print("* Copy data files from exalogic first compute node  ...")
 	# cf.copydatafiles()
@@ -97,9 +106,9 @@ def thegrapher(cf):
 	#4) Graph EoIB swithces statistics
 	switches=Switches(cf)
 	#5) Graph ZFS data
-	zfs=ZFS(cf)
+	#zfs=ZFS(cf)
 	#6) Generate PPT with graphs
-	reportPPTX(cf, servers, switches, zfs)
+	reportPPTX2(cf, servers, switches)
 
 if __name__ == "__main__":
 	'''Main program'''
@@ -117,4 +126,3 @@ if __name__ == "__main__":
 		print("Please ... configfile ... Please")
 		cf.generateconfigfile()
 		thegrapher(cf)
-
